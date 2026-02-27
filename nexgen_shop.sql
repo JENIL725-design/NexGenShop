@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.2
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Feb 18, 2026 at 04:22 PM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- Host: localhost:3306
+-- Generation Time: Feb 27, 2026 at 04:02 PM
+-- Server version: 8.4.3
+-- PHP Version: 8.3.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -28,15 +28,15 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `complaints` (
-  `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
+  `id` int NOT NULL,
+  `user_id` int NOT NULL,
   `user_name` varchar(100) NOT NULL,
   `subject` varchar(255) NOT NULL,
   `message` text NOT NULL,
-  `admin_reply` text DEFAULT NULL,
+  `admin_reply` text,
   `status` enum('pending','resolved') DEFAULT 'pending',
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 -- --------------------------------------------------------
 
@@ -45,7 +45,7 @@ CREATE TABLE `complaints` (
 --
 
 CREATE TABLE `orders` (
-  `id` int(11) NOT NULL,
+  `id` int NOT NULL,
   `order_number` varchar(10) NOT NULL,
   `customer_name` varchar(100) NOT NULL,
   `customer_email` varchar(100) NOT NULL,
@@ -54,8 +54,8 @@ CREATE TABLE `orders` (
   `total_amount` decimal(10,2) NOT NULL,
   `payment_method` enum('cod','credit_card') DEFAULT 'cod',
   `status` enum('pending','dispatched','out_for_delivery','delivered','cancelled') DEFAULT 'pending',
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 -- --------------------------------------------------------
 
@@ -64,13 +64,13 @@ CREATE TABLE `orders` (
 --
 
 CREATE TABLE `order_items` (
-  `id` int(11) NOT NULL,
-  `order_id` int(11) NOT NULL,
-  `product_id` int(11) NOT NULL,
+  `id` int NOT NULL,
+  `order_id` int NOT NULL,
+  `product_id` int NOT NULL,
   `product_name` varchar(255) NOT NULL,
-  `quantity` int(11) NOT NULL,
+  `quantity` int NOT NULL,
   `price` decimal(10,2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 -- --------------------------------------------------------
 
@@ -79,21 +79,18 @@ CREATE TABLE `order_items` (
 --
 
 CREATE TABLE `products` (
-  `id` int(11) NOT NULL,
+  `id` int NOT NULL,
   `name` varchar(255) NOT NULL,
   `price` decimal(10,2) NOT NULL,
   `image` varchar(255) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
 -- Dumping data for table `products`
 --
 
 INSERT INTO `products` (`id`, `name`, `price`, `image`, `created_at`) VALUES
-(1, 'Mechanical Keyboard', 49.99, 'img/keyboard.png', '2026-02-18 15:01:55'),
-(2, 'Logitech g29', 129.99, 'img/g29.png', '2026-02-18 15:01:55'),
-(3, 'hyperX gaming headphone', 89.99, 'img/headphone.png', '2026-02-18 15:01:55'),
 (4, 'Mechanical Keyboard', 49.99, 'img/keyboard.png', '2026-02-18 15:17:36'),
 (5, 'Logitech g29', 129.99, 'img/g29.png', '2026-02-18 15:17:36'),
 (6, 'hyperX gaming headphone', 89.99, 'img/headphone.png', '2026-02-18 15:17:36'),
@@ -108,21 +105,24 @@ INSERT INTO `products` (`id`, `name`, `price`, `image`, `created_at`) VALUES
 --
 
 CREATE TABLE `users` (
-  `id` int(11) NOT NULL,
+  `id` int NOT NULL,
   `name` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
+  `profile_photo` varchar(255) DEFAULT NULL,
+  `phone` varchar(20) DEFAULT NULL,
+  `address` text,
   `role` enum('user','admin') DEFAULT 'user',
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `created_at`) VALUES
-(3, 'jenil', 'jenil@gmail.com', '$2y$10$sLg.oMREpa5s/0sMJKjnIOk1je6RZopEf/5QkG0R9Eqg3MNmX1lYO', 'admin', '2026-02-18 15:07:07'),
-(4, 'jenil', 'jenil1@gmail.com', '$2y$10$hykLt3RqIlFfGbhQQwW7/ej9Y4EdR8yIb/dOnRnhPvcmgIp.ZgDlC', 'user', '2026-02-18 15:07:23');
+INSERT INTO `users` (`id`, `name`, `email`, `password`, `profile_photo`, `phone`, `address`, `role`, `created_at`) VALUES
+(3, 'jenil', 'jenil@gmail.com', '$2y$10$sLg.oMREpa5s/0sMJKjnIOk1je6RZopEf/5QkG0R9Eqg3MNmX1lYO', NULL, NULL, NULL, 'admin', '2026-02-18 15:07:07'),
+(4, 'jenil', 'jenil1@gmail.com', '$2y$10$hykLt3RqIlFfGbhQQwW7/ej9Y4EdR8yIb/dOnRnhPvcmgIp.ZgDlC', NULL, NULL, NULL, 'user', '2026-02-18 15:07:23');
 
 -- --------------------------------------------------------
 
@@ -131,22 +131,21 @@ INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `created_at`) VA
 --
 
 CREATE TABLE `user_cart` (
-  `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `product_id` int(11) NOT NULL,
+  `id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `product_id` int NOT NULL,
   `product_name` varchar(255) NOT NULL,
   `price` decimal(10,2) NOT NULL,
-  `quantity` int(11) NOT NULL DEFAULT 1,
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+  `quantity` int NOT NULL DEFAULT '1',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
 -- Dumping data for table `user_cart`
 --
 
 INSERT INTO `user_cart` (`id`, `user_id`, `product_id`, `product_name`, `price`, `quantity`, `updated_at`) VALUES
-(1, 4, 3, 'hyperX gaming headphone', 89.99, 4, '2026-02-18 15:15:11'),
-(2, 4, 2, 'Logitech g29', 129.99, 2, '2026-02-18 15:15:09');
+(3, 4, 5, 'Logitech g29', 129.99, 1, '2026-02-27 15:59:48');
 
 --
 -- Indexes for dumped tables
@@ -200,37 +199,37 @@ ALTER TABLE `user_cart`
 -- AUTO_INCREMENT for table `complaints`
 --
 ALTER TABLE `complaints`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `user_cart`
 --
 ALTER TABLE `user_cart`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Constraints for dumped tables
