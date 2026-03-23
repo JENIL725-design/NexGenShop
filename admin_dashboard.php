@@ -3,6 +3,7 @@ include 'admin_header.php';
 require 'db_connect.php';
 
 // 1. Get Stats
+
 $total_orders = $pdo->query("SELECT COUNT(*) FROM orders")->fetchColumn();
 $total_revenue = $pdo->query("SELECT SUM(total_amount) FROM orders")->fetchColumn();
 $pending_complaints = $pdo->query("SELECT COUNT(*) FROM complaints WHERE status='pending'")->fetchColumn();
@@ -11,7 +12,7 @@ $pending_complaints = $pdo->query("SELECT COUNT(*) FROM complaints WHERE status=
 $top_products = $pdo->query("
     SELECT product_name, SUM(quantity) as total_sold 
     FROM order_items 
-    GROUP BY product_id 
+    GROUP BY product_id, product_name 
     ORDER BY total_sold DESC 
     LIMIT 5
 ")->fetchAll();

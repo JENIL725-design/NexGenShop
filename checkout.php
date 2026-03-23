@@ -163,7 +163,7 @@ if (empty($_SESSION['cart'])) {
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Expiry Date</label>
-                                <input type="text" id="card_expiry" class="form-control" placeholder="MM / YY" maxlength="5">
+                                <input type="text" id="card_expiry" class="form-control" placeholder="MM / YY" maxlength="4">
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">CVV</label>
